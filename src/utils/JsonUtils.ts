@@ -8,7 +8,7 @@ export class JsonUtils {
 
     public static toJsonString(obj: any, pretty: boolean = false): string {
         if (pretty) {
-            return JSON.stringify(this.toJson(obj), null, 2)
+            return JSON.stringify(obj, null, 2)
         }
         return JSON.stringify(this.toJson(obj))
     }
@@ -19,5 +19,10 @@ export class JsonUtils {
 
     public static readJsonString<T>(jsonString: string, cls: ClassConstructor<T>): T {
         return this.readJson(JSON.parse(jsonString), cls)
+    }
+
+    public static objToOtherObj<T>(obj: any, cls: ClassConstructor<T>): T {
+        let jsonString = this.toJsonString(obj)
+        return this.readJsonString(jsonString, cls)
     }
 }

@@ -14,7 +14,7 @@ class Param {
 
 class ParamGroup {
   name: string = ''
-  params: Param[] = []
+  params: Param[] = [new Param()]
 }
 
 // 当前流水线配置
@@ -67,7 +67,7 @@ function loadUserParamGroups() {
 // 选择变量组
 function selectVariableGroup(selected: ParamGroup) {
   Logger.info('选择变量组', JsonUtils.toJsonString(selected, true))
-  pipeline.paramGroup = selected
+  pipeline.paramGroup = JsonUtils.objToOtherObj(selected, ParamGroup)
 }
 
 const removeParam = (index: number) => {
@@ -90,14 +90,8 @@ const removeUserParamGroup = (index: number) => {
 
 // 保存变量组
 const saveParamGroup = (save: ParamGroup) => {
-  Logger.info('要保存的的group: 带过滤', JsonUtils.toJsonString(save, true))
-  save.params = save.params.filter(v => v.name && v.value && v.name !== '' && v.value !== '')
-  Logger.info('要保存的的group: 过滤后', JsonUtils.toJsonString(save, true))
-
-  Logger.info('现有的groups', JsonUtils.toJsonString(userParamGroups, true))
   const beSaveUserParamGroups = userParamGroups.filter(g => g.name !== save.name)
-  beSaveUserParamGroups.push(save)
-  Logger.info('保存的groups', JsonUtils.toJsonString(beSaveUserParamGroups, true))
+  beSaveUserParamGroups.push(JsonUtils.objToOtherObj(save, ParamGroup))
   GmUtils.setValue(STORAGE_USER_PARAM_GROUPS, beSaveUserParamGroups)
   userParamGroups.splice(0, userParamGroups.length, ...beSaveUserParamGroups)
 }
